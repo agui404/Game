@@ -1,5 +1,6 @@
 package cn.mamobet.game.model.dto;
 
+import cn.mamobet.game.common.CommonEnum;
 import cn.mamobet.game.entity.BetOrder;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.DecimalMin;
@@ -56,6 +57,12 @@ public class AutoBetDTO {
     @NotNull(message = "输后递增百分比不能为空")
     @DecimalMin(value = "0.0001", message = "输后递增百分比最小值为 0.0001")
     private BigDecimal lossIncrement;
+
+    @Schema(description = "赢了是否重置 0=否，1=重置", example = "0")
+    private CommonEnum.YesOrNo winReset;
+
+    @Schema(description = "输了是否重置 0=否，1=重置", example = "0")
+    private CommonEnum.YesOrNo lossReset;
 
     /**
      * 转换为单局下注 DTO

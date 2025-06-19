@@ -11,6 +11,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
@@ -77,10 +78,16 @@ public class AutoBetExecutor {
 
                     // 更新下局投注额
                     CommonEnum.YesOrNo isWin = order.getIsWin();
-                    if (CommonEnum.YesOrNo.YES == isWin) {
-                        currentBetAmount = winInc != null && winInc.compareTo(BigDecimal.ZERO) > 0 ? currentBetAmount.multiply(BigDecimal.ONE.add(winInc)) : currentBetAmount;
+                    // 赢了：是否重置
+                    if (isWin == CommonEnum.YesOrNo.YES) {
+                        currentBetAmount = CommonEnum.YesOrNo.YES == autoBetDTO.getWinReset()
+                                ? autoBetDTO.getBetAmount() // 重置
+                                : applyIncrement(currentBetAmount, winInc); // 递增
                     } else {
-                        currentBetAmount = lossInc != null && lossInc.compareTo(BigDecimal.ZERO) > 0 ? currentBetAmount.multiply(BigDecimal.ONE.add(lossInc)) : currentBetAmount;
+                        // 输了：是否重置
+                        currentBetAmount = CommonEnum.YesOrNo.YES == autoBetDTO.getLossReset()
+                                ? autoBetDTO.getBetAmount() // 重置
+                                : applyIncrement(currentBetAmount, lossInc); // 递增
                     }
 
                     count++;
@@ -102,5 +109,15 @@ public class AutoBetExecutor {
     @PreDestroy
     public void shutdown() {
         executor.shutdownNow();
+    }
+
+    /**
+     * 根据百分比递增
+     */
+    private BigDecimal applyIncrement(BigDecimal base, BigDecimal increment) {
+        if (increment != null && increment.compareTo(BigDecimal.ZERO) > 0) {
+            return base.multiply(BigDecimal.ONE.add(increment)).setScale(4, RoundingMode.HALF_UP);
+        }
+        return base;
     }
 }
