@@ -1,5 +1,6 @@
 package cn.mamobet.game.controller;
 
+import cn.mamobet.game.aop.RateLimit;
 import cn.mamobet.game.common.R;
 import cn.mamobet.game.entity.BetOrder;
 import cn.mamobet.game.entity.BetUser;
@@ -30,6 +31,7 @@ public class GameController {
     /**
      * 查询余额
      */
+    @RateLimit(limit = 2,time = 1)
     @Operation(summary = "查询余额")
     @GetMapping("/balance/{userId}")
     public R<BetUser> getBalance(@PathVariable Long userId) {

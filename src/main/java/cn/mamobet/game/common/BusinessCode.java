@@ -6,7 +6,8 @@ import lombok.Getter;
 public enum BusinessCode {
     SUCCESS(0, "成功"),
     FAIL(1, "失败"),
-    UNKNOWN_ERROR(5001, "未知错误，请联系管理员！"),
+    UNKNOWN_ERROR(5001, "未知错误，请联系管理员"),
+    TOO_MANY_REQUESTS(5002, "请求过于频繁"),
     BALANCE_NOT_ENOUGH(1001, "余额不足"),
     USER_NOT_FOUND(1002, "用户不存在"),
     INVALID_PAYOUT(1003, "派彩值非法"),

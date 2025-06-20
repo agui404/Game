@@ -79,7 +79,7 @@ public class BetOrderServiceImpl extends ServiceImpl<BetOrderMapper, BetOrder> i
             betCondition = BetOrderDTO.BetCondition.OVER;
         }
 
-        //扣除余额（先扣款）
+        //扣除余额（先扣款） todo 暂且不加锁
         user.setBalance(user.getBalance().subtract(betAmount));
         betUserService.updateById(user);
 
@@ -101,7 +101,7 @@ public class BetOrderServiceImpl extends ServiceImpl<BetOrderMapper, BetOrder> i
         BigDecimal payoutAmount = isWin ? betAmount.multiply(payoutRatio).setScale(4, RoundingMode.HALF_UP)
                 : BigDecimal.ZERO;
 
-        //中奖就加钱
+        //中奖就加钱  todo 暂且不加锁
         if (isWin) {
             user.setBalance(user.getBalance().add(payoutAmount));
             betUserService.updateById(user);
