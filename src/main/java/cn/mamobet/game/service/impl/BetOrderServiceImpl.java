@@ -58,10 +58,7 @@ public class BetOrderServiceImpl extends ServiceImpl<BetOrderMapper, BetOrder> i
 
         //校验派彩值
         BigDecimal payoutRatio = betOrderDTO.getPayoutRatio();
-        if (payoutRatio == null || payoutRatio.compareTo(new BigDecimal("1.0102")) < 0
-                || payoutRatio.compareTo(new BigDecimal("99.0000")) > 0) {
-            throw new BusinessException(BusinessCode.INVALID_PAYOUT);
-        }
+        BetCalculatorUtil.checkPayoutRatio(payoutRatio);
 
         //派彩计算器 ,暂且只通过根据派彩值计算
         BetCalcParam betCalcParam = new BetCalcParam();

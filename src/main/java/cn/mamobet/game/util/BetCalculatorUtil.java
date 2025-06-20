@@ -49,11 +49,24 @@ public class BetCalculatorUtil {
         if (winRate.compareTo(new BigDecimal("0.01")) < 0 || winRate.compareTo(new BigDecimal("98.00")) > 0) {
             throw new BusinessException(BusinessCode.INVALID_PROBABILITY);
         }
+        //校验派彩值
+        checkPayoutRatio(payoutRatio);
 
         // 掷小于
         BigDecimal rollUnder = winRate;
         //掷大于 = 100.00 - 掷小于
         BigDecimal rollOver = BigDecimal.valueOf(100).subtract(rollUnder);
         return BetCalcResultDTO.builder().payoutRatio(payoutRatio).winRate(winRate).rollUnder(rollUnder).rollOver(rollOver).build();
+    }
+
+
+    /**
+     * 校验派彩值
+     */
+    public static void checkPayoutRatio(BigDecimal payoutRatio) {
+        if (payoutRatio == null || payoutRatio.compareTo(new BigDecimal("1.0102")) < 0
+                || payoutRatio.compareTo(new BigDecimal("99.0000")) > 0) {
+            throw new BusinessException(BusinessCode.INVALID_PAYOUT);
+        }
     }
 }
